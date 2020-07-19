@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<div class="card">
+    <div class="card-header">
+      <div class="row align-items-center">
+        <div class="col-8">
+          <h3 class="mb-0">Teacher Details #{{teacher.id}}</h3>
+        </div>
+        <div class="col-4 text-right">
+          <a href="{% url 'teacher-update' teacher.id %}" class="btn btn-sm btn-info">Update</a>
+          <a href="{% url 'teacher-delete' teacher.id %}" class="btn btn-sm btn-warning">Delete</a>
+          <a href="{% url 'teacher-list' %}" class="btn btn-sm btn-primary">View All</a>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+          <dt class="col-sm-3">Teacher Name</dt>
+          <dd class="col-sm-9">{{ teacher.name }}</dd>
+        </dl>
+
+        <div class="col-8">
+             <h3 class="mb-0">Students associated with {{teacher.name}}</h3>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Star Student for {{teacher.name}}</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'student-detail' student.student.id %}">{{ student.student.id }}</a>
+                        </td>
+                        <td>{{ student.student.name }}</td>
+                        <td>{{ student.is_star_student }}</td>
+                        <td class="text-right">
+                            <div class="dropdown">
+                                <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                  <a class="dropdown-item" href="{% url 'student-update' student.student.id %}">Update</a>
+                                  <a class="dropdown-item" href="{% url 'student-delete' student.student.id %}">Delete</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<div class="card">
+    <div class="card-header">
+      <div class="row align-items-center">
+        <div class="col-8">
+          <h3 class="mb-0">Welcome to School Management Portal</h3>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="col-8">
+            <h3 class="mb-0">We have
+                <a href="{% url 'teacher-list' %}">{{ teachers }} teachers</a>
+                and <a href="{% url 'student-list' %}"> {{ students }} students.</a>
+            </h3>
+        </div>
+    </div>
+</div>
+{% endblock %}
