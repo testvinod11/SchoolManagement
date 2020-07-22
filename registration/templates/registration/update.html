@@ -6,10 +6,13 @@
     <div class="card-header">
         <div class="row align-items-center">
             <div class="col-8">
-                <h3 class="mb-0">Add a New Student</h3>
+                <h3 class="mb-0">Update {{view_for|title}} #{{object.id}}</h3>
             </div>
             <div class="col-4 text-right">
-                <a href="{% url 'student-list' %}" class="btn btn-sm btn-primary">View All</a>
+                <a href="{% if view_for == 'student' %}{% url 'student-detail' object.id %}{% else %}{% url 'teacher-detail' object.id %}{% endif %}" class="btn btn-sm btn-info">View</a>
+                <a href="{% if view_for == 'student' %}{% url 'student-list' %}{% else %}{% url 'teacher-list' %}{% endif %}" class="btn btn-sm btn-info">View All</a>
+<!--                <a href="{% url 'student-detail' student.id %}" class="btn btn-sm btn-info">View</a>-->
+<!--                <a href="{% url 'student-list' %}" class="btn btn-sm btn-primary">View All</a>-->
             </div>
         </div>
     </div>
@@ -22,13 +25,13 @@
                         <div class="form-group">
                             <label class="form-control-label"
                                 for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
-                                {% render_field form.name|add_class:"form-control form-control-alternative" placeholder="Enter student name here"%}
+                                {% render_field form.name|add_class:"form-control form-control-alternative" placeholder="Enter name here"%}
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-4 offset-4">
-                        <button type="submit" class="btn btn-success btn-block">Create</button>
+                        <button type="submit" class="btn btn-success btn-block">Update</button>
                     </div>
                 </div>
             </div>

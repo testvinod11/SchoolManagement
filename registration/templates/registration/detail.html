@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<div class="card">
+    <div class="card-header">
+      <div class="row align-items-center">
+        <div class="col-8">
+          <h3 class="mb-0">{{view_for|title}} Details #{{object.id}}</h3>
+        </div>
+        <div class="col-4 text-right">
+            {% if view_for == 'student'%}
+                <a href="{% url 'student-update' object.id %}" class="btn btn-sm btn-info">Update</a>
+                <a href="{% url 'student-delete' object.id %}" class="btn btn-sm btn-warning">Delete</a>
+                <a href="{% url 'student-list' %}" class="btn btn-sm btn-primary">View All</a>
+            {% else %}
+                <a href="{% url 'teacher-update' object.id %}" class="btn btn-sm btn-info">Update</a>
+                <a href="{% url 'teacher-delete' object.id %}" class="btn btn-sm btn-warning">Delete</a>
+                <a href="{% url 'teacher-list' %}" class="btn btn-sm btn-primary">View All</a>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+          <dt class="col-sm-3">{{view_for|title}} Name</dt>
+          <dd class="col-sm-9">{{ object.name }} </dd>
+        </dl>
+
+        <div class="col-8">
+             <h3 class="mb-0">{% if view_for == 'student'%}Teachers {% else %} Student {% endif %} associated with {{object.name}}</h3>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">{% if view_for == 'student'%}Star student by below teachers {% else %} Who is Star Student for this Teacher {% endif %} </th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for obj in queryset %}
+                        {% if view_for == 'student'%}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'teacher-detail' obj.teacher_id %}">{{ obj.teacher_id }}</a>
+                                </td>
+                                <td>{{ obj.teacher__name }}</td>
+                                <td>{{ obj.is_star_student }}</td>
+                                <td class="text-right">
+                                    <div class="dropdown">
+                                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      <i class="fas fa-ellipsis-v"></i>
+                                    </a>
+                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                          <a class="dropdown-item" href="{% url 'teacher-update' obj.teacher_id %}">Update</a>
+                                          <a class="dropdown-item" href="{% url 'teacher-delete' obj.teacher_id %}">Delete</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'student-detail' obj.student_id %}">{{ obj.student_id }}</a>
+                                </td>
+                                <td>{{ obj.student__name }}</td>
+                                <td>{{ obj.is_star_student }}</td>
+                                <td class="text-right">
+                                    <div class="dropdown">
+                                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      <i class="fas fa-ellipsis-v"></i>
+                                    </a>
+                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                          <a class="dropdown-item" href="{% url 'student-update' obj.student_id %}">Update</a>
+                                          <a class="dropdown-item" href="{% url 'student-delete' obj.student_id %}">Delete</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
