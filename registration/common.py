@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 
 def handler404(self):
-    self.template_name = 'registration/404.html'
+    self.template_name = '404.html'
     response = self.render_to_response(context={})
     response.status_code = 404
     return response
@@ -46,7 +46,7 @@ class CommonListView(ListView):
         return context
 
     def get_queryset(self):
-        return super().get_queryset().filter(is_deleted=False).order_by('-id').values('id', 'name')
+        return super().get_queryset().order_by('-id').values('id', 'name')
 
 
 class CommonDetailView(DetailView):
@@ -55,8 +55,6 @@ class CommonDetailView(DetailView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if self.object.is_deleted:
-            return handler404(self)
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
 
@@ -70,8 +68,6 @@ class CommonUpdateView(UpdateView, CommonContextData):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if self.object.is_deleted:
-            return handler404(self)
         return super().get(request, *args, **kwargs)
 
 
@@ -84,8 +80,6 @@ class CommonDeleteView(DeleteView, CommonContextData):
         success URL.
         """
         self.object = self.get_object()
-        if self.object.is_deleted:
-            return handler404(self)
         success_url = self.get_success_url()
         self.object.is_deleted = True
         self.object.save()
