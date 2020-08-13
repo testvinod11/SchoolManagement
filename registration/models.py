@@ -6,11 +6,18 @@ class CustomManager(models.Manager):
         return super(CustomManager, self).get_queryset().filter(is_deleted=False)
 
 
-class RegistrationBaseModel(models.Model):
-    name = models.CharField(max_length=100, null=False)
+class BaseDateModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class RegistrationBaseModel(BaseDateModel):
+    name = models.CharField(max_length=100, null=False)
     is_deleted = models.BooleanField(default=False)
+
     objects = CustomManager()
 
     class Meta:
@@ -29,10 +36,11 @@ class Teacher(RegistrationBaseModel):
         return f"{self.name}"
 
 
-class TeacherStudentMap(models.Model):
+class TeacherStudentMap(BaseDateModel):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='students')
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='teachers')
     is_star_student = models.BooleanField(default=False)
+    is_associate = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('teacher', 'student')

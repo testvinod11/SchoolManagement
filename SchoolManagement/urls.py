@@ -30,6 +30,8 @@ urlpatterns = [
     path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
     path('index', views.DashboardDetailView.as_view(), name=''),
     url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
+    url(r'^ajax/associate_teacher_student/$', views.associate_teacher_student, name='associate_teacher_student'),
+    url(r'^ajax/star_student/$', views.star_student, name='star_student'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

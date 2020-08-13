@@ -5,7 +5,7 @@
     <div class="card-header">
       <div class="row align-items-center">
         <div class="col-8">
-          <h3 class="mb-0">{{view_for|title}} Details #{{object.id}}</h3>
+          <h3 class="mb-0">{{view_for|title}} Details #{{object.id}} </h3>
         </div>
         <div class="col-4 text-right">
             {% if view_for == 'student'%}
@@ -27,17 +27,17 @@
         </dl>
 
         <div class="col-8">
-             <h3 class="mb-0">{% if view_for == 'student'%}Teachers {% else %} Student {% endif %} associated with {{object.name}}</h3>
+            <h3 class="mb-0">Associated {% if view_for == 'student'%}Teachers {% else %} Student {% endif %} with "{{object.name}}" list are below</h3><br>
         </div>
 
         <div class="table-responsive">
-            <table class="table align-items-center table-flush">
+            <table class="table align-items-center table-flush" id="associate">
                 <thead class="thead-light">
                     <tr>
                         <th scope="col">Id</th>
                         <th scope="col">Name</th>
-                        <th scope="col">{% if view_for == 'student'%}Star student by below teachers {% else %} Who is Star Student for this Teacher {% endif %} </th>
-                        <th scope="col"></th>
+                        <th scope="col">Associate Relationship </th>
+                        <th scope="col">Star student </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,18 +48,8 @@
                                     <a href="{% url 'teacher-detail' obj.teacher_id %}">{{ obj.teacher_id }}</a>
                                 </td>
                                 <td>{{ obj.teacher__name }}</td>
-                                <td>{{ obj.is_star_student }}</td>
-                                <td class="text-right">
-                                    <div class="dropdown">
-                                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      <i class="fas fa-ellipsis-v"></i>
-                                    </a>
-                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                          <a class="dropdown-item" href="{% url 'teacher-update' obj.teacher_id %}">Update</a>
-                                          <a class="dropdown-item" href="{% url 'teacher-delete' obj.teacher_id %}">Delete</a>
-                                        </div>
-                                    </div>
-                                </td>
+                                <td><button type="button" class="btn btn-sm btn-primary non-associate" data-viewFor="{{ view_for }}" data-teacherId="{{obj.teacher_id}}" data-studentId="{{object.id}}" data-url="{% url 'teacher-detail' obj.teacher_id %}" data-name="{{obj.teacher__name}}">UnAssociate</button></td>
+                                <td><button type="button" class="btn btn-sm btn-primary star-student" data-teacherId="{{obj.teacher_id}}" data-studentId="{{object.id}}" data-url="{% url 'teacher-detail' obj.teacher_id %}" >{% if obj.is_star_student %}UnStar{% else %}Star{% endif %}</button></td>
                             </tr>
                         {% else %}
                             <tr>
@@ -67,24 +57,166 @@
                                     <a href="{% url 'student-detail' obj.student_id %}">{{ obj.student_id }}</a>
                                 </td>
                                 <td>{{ obj.student__name }}</td>
-                                <td>{{ obj.is_star_student }}</td>
-                                <td class="text-right">
-                                    <div class="dropdown">
-                                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      <i class="fas fa-ellipsis-v"></i>
-                                    </a>
-                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                          <a class="dropdown-item" href="{% url 'student-update' obj.student_id %}">Update</a>
-                                          <a class="dropdown-item" href="{% url 'student-delete' obj.student_id %}">Delete</a>
-                                        </div>
-                                    </div>
-                                </td>
+                                <td><button type="button" class="btn btn-sm btn-primary non-associate" data-viewFor="{{ view_for }}" data-teacherId="{{object.id}}" data-studentId="{{obj.student_id}}" data-url="{% url 'student-detail' obj.student_id %}" data-name="{{obj.student__name}}">UnAssociate</button></td>
+                                <td><button type="button" class="btn btn-sm btn-primary star-student" data-teacherId="{{object.id}}" data-studentId="{{obj.student_id}}" data-url="{% url 'student-detail' obj.student_id %}" >{% if obj.is_star_student %}UnStar{% else %}Star{% endif %}</button></td>
                             </tr>
                         {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+
+
+        <div class="col-8">
+             <h3 class="mb-0">Non associated {% if view_for == 'student'%}Teachers {% else %} Student {% endif %} list are below</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-items-center table-flush" id="non_associate">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">RelationShip</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for obj in non_associate_qs %}
+                        {% if view_for == 'student'%}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'teacher-detail' obj.id %}">{{ obj.id }}</a>
+                                </td>
+                                <td>{{ obj.name }}</td>
+                                <td><button type="button" class="btn btn-sm btn-primary associate" data-viewFor="{{ view_for }}" data-teacherId="{{obj.id}}" data-studentId="{{object.id}}" data-url="{% url 'teacher-detail' obj.id %}" data-name="{{obj.name}}">Associate</button></td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'student-detail' obj.id %}">{{ obj.id }}</a>
+                                </td>
+                                <td>{{ obj.name }}</td>
+                                <td><button type="button" class="btn btn-sm btn-primary associate" data-viewFor="{{ view_for }}" data-teacherId="{{object.id}}" data-studentId="{{obj.id}}" data-url="{% url 'student-detail' obj.id %}" data-name="{{obj.name}}">Associate</button></td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script type="text/javascript">
+
+$('.associate').click(function() {
+    var studentId = $(this).attr("data-studentId");
+    var teacherId = $(this).attr("data-teacherId");
+    var viewFor = $(this).attr("data-viewFor");
+    var path = $(this).attr("data-url");
+    var name = $(this).attr("data-name");
+    var td = event.target.parentNode;
+    var tr = td.parentNode;
+    $.ajax({
+        url: '/ajax/associate_teacher_student/',
+        data: {
+          'studentId': studentId,
+          'teacherId': teacherId,
+          'associate': true
+        },
+        dataType: 'json',
+        success: function(data) {
+        tr.parentNode.removeChild(tr);
+        if(viewFor == "teacher"){
+            var dataId = studentId;
+        }else{
+            var dataId = teacherId;
+        }
+
+        var trElement = ''
+        trElement += "<tr><td><a href=" +
+            '"'+ path +'">' + dataId + "</a>" +
+            "</td><td>" + name + "</td>"+
+            "<td><button type="+'"button" class="btn btn-sm btn-primary non-associate" data-viewFor="' + viewFor + '" data-teacherId="' + teacherId +'" data-studentId="' + studentId +'" data-url="' + path + '" data-name="' + name + '">UnAssociate</button></td>'+
+            "<td><button type="+'"button" class="btn btn-sm btn-primary star-student" data-teacherId="' + teacherId + '" data-studentId="' + studentId +'" data-url="' + path + '" >Star</button></td>'+
+            "</tr>"
+        $('#associate').prepend(trElement);
+        },
+        error: function() {
+            alert('Something is wrong');
+        }
+      });
+});
+
+$('.non-associate').click(function() {
+    var studentId = $(this).attr("data-studentId");
+    var teacherId = $(this).attr("data-teacherId");
+    var viewFor = $(this).attr("data-viewFor");
+    var path = $(this).attr("data-url");
+    var name = $(this).attr("data-name");
+    var td = event.target.parentNode;
+    var tr = td.parentNode;
+    $.ajax({
+        url: '/ajax/associate_teacher_student/',
+        data: {
+          'studentId': studentId,
+          'teacherId': teacherId,
+          'associate': false
+        },
+        dataType: 'json',
+        success: function(data) {
+        tr.parentNode.removeChild(tr);
+        if(viewFor == "teacher"){
+            var dataId = studentId;
+        }else{
+            var dataId = teacherId;
+        }
+
+        var trElement = ''
+        trElement += "<tr><td><a href=" +
+            '"'+ path +'">' + dataId + "</a>" +
+            "</td><td>" + name + "</td>"+
+            "<td><button type="+'"button" class="btn btn-sm btn-primary associate" data-viewFor="' + viewFor + '" data-teacherId="' + teacherId +'" data-studentId="' + studentId +'" data-url="' + path + '" data-name="' + name + '">Associate</button></td>'+
+            "</tr>"
+
+        $('#non_associate').prepend(trElement);
+
+        },
+        error: function() {
+            alert('Something is wrong');
+        }
+      });
+});
+
+$('.star-student').click(function() {
+    var starStudent
+    var studentId = $(this).attr("data-studentId");
+    var teacherId = $(this).attr("data-teacherId");
+    var obj = $(this);
+    if ($(this).text() == "Star"){
+        starStudent = true
+    } else{
+        starStudent = false
+    }
+    $.ajax({
+        url: '/ajax/star_student/',
+        data: {
+          'studentId': studentId,
+          'teacherId': teacherId,
+          'starStudent': starStudent
+        },
+        dataType: 'json',
+        success: function(data) {
+        if (starStudent == true){
+            obj.text("UnStar");
+        }else{
+            obj.text("Star");
+        }
+        },
+        error: function() {
+            alert('Something is wrong');
+        }
+      });
+});
+
+</script>
 {% endblock %}
