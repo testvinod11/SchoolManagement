@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
     url(r'^ajax/associate_teacher_student/$', views.associate_teacher_student, name='associate_teacher_student'),
     url(r'^ajax/star_student/$', views.star_student, name='star_student'),
+    url(r'^ajax/who_can_teach/$', views.who_can_teach, name='who_can_teach'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

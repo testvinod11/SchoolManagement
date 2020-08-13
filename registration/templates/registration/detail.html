@@ -27,7 +27,11 @@
         </dl>
 
         <div class="col-8">
-            <h3 class="mb-0">Associated {% if view_for == 'student'%}Teachers {% else %} Student {% endif %} with "{{object.name}}" list are below</h3><br>
+            <h3 class="mb-0">Associated {% if view_for == 'student'%}Teachers {% else %} Student {% endif %} with "{{object.name}}" list are below</h3>
+            {% if view_for != 'student'%}
+                <button type="button" class="btn btn-info btn-sn" id="whoCanTeach" data-teacherId="{{object.id}}">Who can teach</button>
+            {% endif %}
+            </br></br>
         </div>
 
         <div class="table-responsive">
@@ -105,8 +109,72 @@
 
     </div>
 </div>
+
+
+<div id="myModal2" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="myModalLabel">Who Can Teach( Star Student List) </h3>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <table class="table align-items-center table-flush">
+                    <thead class="thead-light thead-body">
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-body"></tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script type="text/javascript">
+
+$('#whoCanTeach').click(function() {
+    var teacherId = $(this).attr("data-teacherId");
+    $.ajax({
+        url: '/ajax/who_can_teach/',
+        data: {
+          'teacherId': teacherId
+        },
+        dataType: 'json',
+        success: function(data) {
+
+            $("#myModal2 .table-body").empty();
+
+            var trElement = ""
+            if(data.length > 0){
+                for (i = 0; i < data.length; i++) {
+                    trElement += "<tr>" +
+                    "<td>" + data[i].student_id + "</td>" +
+                    "<td>" + data[i].student__name + "</td></tr>"
+                }
+                $("#myModal2 .thead-body").show();
+            }else{
+                trElement += "<b> No one Star student associate with Teacher </b>"
+                $("#myModal2 .thead-body").hide();
+            }
+            $("#myModal2 .table-body").append(trElement);
+            $("#myModal2").modal("show");
+
+        },
+        error: function() {
+            alert('Something is wrong');
+        }
+      });
+});
+
 
 $('.associate').click(function() {
     var studentId = $(this).attr("data-studentId");

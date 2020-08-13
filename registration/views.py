@@ -158,3 +158,16 @@ def star_student(request):
         obj.save()
         return JsonResponse(data)
     return obj
+
+
+def who_can_teach(request):
+    """
+
+    :param request:
+    :return:
+    """
+    teacher_id = request.GET.get('teacherId', None)
+    if not teacher_id:
+        return HttpResponseNotFound()
+    qs = TeacherStudentMap.objects.filter(teacher_id=teacher_id, is_star_student=True, is_associate=True).values('student_id', 'student__name')
+    return JsonResponse(list(qs), safe=False)
